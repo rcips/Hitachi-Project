@@ -1,0 +1,199 @@
+{
+  "info": {
+    "name": "SmartPark API",
+    "description": "SmartPark intelligent parking management REST API. Run 'Login' first — it automatically stores the JWT into the {{token}} collection variable used by every other request.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:8080" },
+    { "key": "token", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.token) { pm.collectionVariables.set('token', data.token); }",
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Token present', () => pm.expect(data.token).to.be.a('string'));"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": [ "{{baseUrl}}" ], "path": [ "api", "auth", "login" ] }
+          }
+        },
+        {
+          "name": "Login - Bad Credentials (expect 401)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"wrong-password\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/auth/login", "host": [ "{{baseUrl}}" ], "path": [ "api", "auth", "login" ] }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Parking Lots",
+      "item": [
+        {
+          "name": "Register Parking Lot",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lotId\": \"LOT-010\",\n  \"location\": \"Riverside Garage\",\n  \"capacity\": 25,\n  \"costPerMinute\": 0.60\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parking-lots", "host": [ "{{baseUrl}}" ], "path": [ "api", "parking-lots" ] }
+          }
+        },
+        {
+          "name": "List All Parking Lots",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{baseUrl}}/api/parking-lots", "host": [ "{{baseUrl}}" ], "path": [ "api", "parking-lots" ] }
+          }
+        },
+        {
+          "name": "Get Occupancy (LOT-001)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/parking-lots/LOT-001/occupancy",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "parking-lots", "LOT-001", "occupancy" ]
+            }
+          }
+        },
+        {
+          "name": "List Parked Vehicles (LOT-001)",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/parking-lots/LOT-001/vehicles",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "parking-lots", "LOT-001", "vehicles" ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Vehicles",
+      "item": [
+        {
+          "name": "Register Vehicle",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"licensePlate\": \"NEW-001\",\n  \"type\": \"CAR\",\n  \"ownerName\": \"Sam Carter\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/vehicles", "host": [ "{{baseUrl}}" ], "path": [ "api", "vehicles" ] }
+          }
+        },
+        {
+          "name": "List All Vehicles",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": { "raw": "{{baseUrl}}/api/vehicles", "host": [ "{{baseUrl}}" ], "path": [ "api", "vehicles" ] }
+          }
+        },
+        {
+          "name": "Get Vehicle by License Plate",
+          "request": {
+            "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
+            "url": {
+              "raw": "{{baseUrl}}/api/vehicles/ABC-123",
+              "host": [ "{{baseUrl}}" ],
+              "path": [ "api", "vehicles", "ABC-123" ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Parking Operations",
+      "item": [
+        {
+          "name": "Check In",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lotId\": \"LOT-001\",\n  \"licensePlate\": \"ABC-123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parking/check-in", "host": [ "{{baseUrl}}" ], "path": [ "api", "parking", "check-in" ] }
+          }
+        },
+        {
+          "name": "Check In - Full Lot (expect 409)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"lotId\": \"LOT-004\",\n  \"licensePlate\": \"XYZ-789\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parking/check-in", "host": [ "{{baseUrl}}" ], "path": [ "api", "parking", "check-in" ] },
+            "description": "Register + check in a second vehicle after LOT-004 (capacity 1) is already occupied to see the 409 response."
+          }
+        },
+        {
+          "name": "Check Out",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"licensePlate\": \"ABC-123\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/api/parking/check-out", "host": [ "{{baseUrl}}" ], "path": [ "api", "parking", "check-out" ] }
+          }
+        }
+      ]
+    }
+  ]
+}
