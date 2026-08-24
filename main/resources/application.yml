@@ -1,0 +1,43 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: smartpark
+
+  datasource:
+    url: jdbc:h2:mem:smartparkdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    open-in-view: false
+    # Ensures Hibernate creates the schema (ddl-auto) BEFORE data.sql runs
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+
+# ---- Application specific configuration ----
+smartpark:
+  auth:
+    username: admin
+    password: Admin@123
+  jwt:
+    # HS256 requires a key of at least 256 bits (32 bytes). This is a demo secret only.
+    secret: SmartParkDemoSecretKeyForJWTSigningPleaseChangeInProd2026!!
+    expiration-ms: 3600000          # 1 hour
+  parking:
+    auto-removal-minutes: 15        # vehicles parked longer than this are auto-checked-out
+    scheduler-fixed-rate-ms: 30000  # how often the scheduler scans for overstayed vehicles
