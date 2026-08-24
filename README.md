@@ -18,9 +18,7 @@ automatically removed by a background scheduler.
 | Build tool            | Maven                                              |
 | Tests                 | JUnit 5 + Mockito + Spring MockMvc                 |
 
-Java 8 / Spring Boot 2.7.x was chosen specifically to satisfy the "Java 1.8 or
-higher" requirement in the simplest, most compatible way (Spring Boot 3.x
-requires Java 17+).
+
 
 ---
 
@@ -32,7 +30,6 @@ Hitachi-Assignment/
 ├── README.md
 ├── postman/
 │   └── SmartPark.postman_collection.json
-├── API-CURL-EXAMPLES.md
 └── src
     ├── main
     │   ├── java/com/smartpark
@@ -215,7 +212,7 @@ Authorization: Bearer <jwt>
 | POST   | `/api/parking/check-out`                | Yes  | Check a vehicle out; returns cost             |
 
 Full request/response examples and curl commands: see
-[`API-CURL-EXAMPLES.md`](./API-CURL-EXAMPLES.md), or import
+import
 [`postman/SmartPark.postman_collection.json`](./postman/SmartPark.postman_collection.json)
 into Postman (the collection auto-captures the JWT from the login response
 into a collection variable, so every subsequent request is pre-authenticated).
