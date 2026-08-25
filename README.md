@@ -98,7 +98,7 @@ Requires **JDK 8+** and **Maven 3.6+** on your machine, with normal internet
 access to Maven Central (to download Spring Boot, H2, jjwt, etc.).
 
 ```bash
-mvn clean install
+mvn clean install 
 ```
 
 This compiles the project, runs the unit/integration tests, and packages a
